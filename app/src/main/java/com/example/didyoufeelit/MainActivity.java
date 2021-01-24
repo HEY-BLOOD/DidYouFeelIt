@@ -60,13 +60,22 @@ public class MainActivity extends AppCompatActivity {
     private class EarthquakeAsyncTask extends AsyncTask<String, Void, Event> {
         @Override
         protected Event doInBackground(String... urls) {
+            // 如果不存在任何 URL 或第一个 URL 为空，切勿执行请求。
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
             // Perform the HTTP request for earthquake data and process the response.
-            Event earthquake = Utils.fetchEarthquakeData(USGS_REQUEST_URL);
-            return earthquake;
+            Event result = Utils.fetchEarthquakeData(urls[0]);
+            return result;
         }
 
         @Override
-        protected void onPostExecute(Event result) {
+        protected void onPostExecute(Event result) {// 如果不存在任何结果，则不执行任何操作。
+            if (result == null) {
+                return;
+            }
+
             // Update the information displayed to the user.
             updateUi(result);
         }
